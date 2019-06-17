@@ -39,12 +39,12 @@ systemctl start docker && sudo systemctl enable docker
 
 usermod -aG docker ${SUDO_USER}
 
-
 if [[ $1 == "manager" ]]
 then
   PRIVATE_IP=$( ip a | awk '/inet/ && /eth0/ { sub(/\/.*/,"",$2); print $2 }' )
   
   docker swarm init --advertise-addr ${PRIVATE_IP}
+  # docker node ls
 else
   docker swarm join --token $1 $2:2377
 fi
