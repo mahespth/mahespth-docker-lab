@@ -1,3 +1,6 @@
+https://www.terraform.io/docs/commands/index.html
+
+
 In this lesson, we begin working with Terraform commands. We will start by creating a very simple Terraform file that will pull down the an image from Docker Hub.
 
 List the Terraform commands:
