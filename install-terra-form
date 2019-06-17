@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [[ $USER != "root" ]]
+then
+  sudo -u root $0 $@
+  exit $?
+fi
+
+YUMY=${YUMY:-"yum -y"}
+URL=" https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip"
+ZIP=$( basename ${URL} )
+
+cd /tmp 
+
+
+if ! curl -O ${URL}
+then
+  echo "[E] error obtaining terraform from: ${URL}"
+  exit 1
+fi 
+
+${YUMY} install unzip
+
+if unzip ${ZIP -d /usr/local/bin/ 
+then
+  rm -f ${ZIP}
+else
+  echo "[E] problem with unzip of ${ZIP}"
+  exit 1
+fi
+
+exit 0
