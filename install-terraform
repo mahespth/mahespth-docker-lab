@@ -7,7 +7,11 @@ then
 fi
 
 YUMY=${YUMY:-"yum -y"}
+
+# Lab was tested with this version - will re-run lab tests and update and test again.
 URL=" https://releases.hashicorp.com/terraform/0.11.13/terraform_0.11.13_linux_amd64.zip"
+
+#URL="https://releases.hashicorp.com/terraform/0.12.2/terraform_0.12.2_linux_amd64.zip"
 ZIP=$( basename ${URL} )
 
 cd /tmp 
