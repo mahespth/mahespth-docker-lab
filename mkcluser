@@ -1,0 +1,59 @@
+#!/bin/bash
+
+if [[ $USER != "root" ]]
+then
+  sudo -u root $0 $@
+  newgrp docker
+  exit $?
+fi
+
+YUMY=${YUMY:-"yum -y"}
+
+# Install lab 
+#####################################################
+
+# we are installing CE so remove std docker if installed
+#####################################################
+if rpm -q docker 
+then
+  if ! ${YUMY} remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
+  then
+    echo "[E] error removing docker, stopping"
+    exit 3
+  fi
+fi
+
+if ! ${YUMY} update
+then
+  echo "[E] issue with system updates, stopping"
+  exit 1
+fi
+
+${YUMY} install -y yum-utils device-mapper-persistent-data lvm2
+
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+${YUMY} install docker-ce
+
+systemctl start docker && sudo systemctl enable docker
+
+usermod -aG docker ${SUDO_USER}
+
+
+if [[ $1 == "manager" ]]
+then
+  PRIVATE_IP=$( ip a | awk '/inet/ && /eth0/ { sub(/\/.*/,"",$2); print $2 }' )
+  
+  docker swarm init --advertise-addr ${PRIVATE_IP}
+else
+  docker swarm join --token $1 $2:2377
+fi
+
+if needs-restarting
+then
+  echo "[I] rebooting in 60s"
+  sleep 60
+  reboot
+fi
+
+
