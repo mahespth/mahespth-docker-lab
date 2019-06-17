@@ -21,7 +21,7 @@ fi
 
 ${YUMY} install unzip
 
-if unzip ${ZIP -d /usr/local/bin/ 
+if unzip ${ZIP} -d /usr/local/bin/ 
 then
   rm -f ${ZIP}
 else
